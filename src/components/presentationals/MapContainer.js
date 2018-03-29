@@ -6,6 +6,8 @@ import InformativeDirection from './InformativeDirection'
 
 import './MapContainer.css'
 
+const ROADMAP = window.google.maps.MapTypeId.ROADMAP
+
 const MapContainer = ({
   departureLatLng,
   arrivalLatLng,
@@ -13,7 +15,7 @@ const MapContainer = ({
   arrivalStation,
   directions
 }) => (
-  <GoogleMap defaultZoom={12} defaultCenter={{ lat: 48.8534, lng: 2.3488 }}>
+  <GoogleMap defaultZoom={12} defaultCenter={{ lat: 48.8534, lng: 2.3488 }} mapTypeId={ROADMAP}>
     <InformativeDirection directions={directions.departureToStationDirections} color="blue" />
     <InformativeDirection directions={directions.stationToStationDirections} color="red" />
     <InformativeDirection directions={directions.stationToArrivalDirections} color="blue" />
