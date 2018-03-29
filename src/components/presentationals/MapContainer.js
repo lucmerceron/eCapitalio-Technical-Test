@@ -78,7 +78,7 @@ class MapContainer extends React.Component {
       DirectionsService.route(
         {
           origin: { lat: velibStation.arrivalStation.lat, lng: velibStation.arrivalStation.lng },
-          destination: velibStation.arrivalLatLng,
+          destination: arrivalLatLng,
           travelMode: window.google.maps.TravelMode.WALKING
         },
         (res, status) => {
