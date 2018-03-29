@@ -10,8 +10,8 @@ export default function directions(state = initState, action) {
     case SEARCH_DIRECTIONS_SUCCESS: {
       return {
         departureToStationDirections: action.departureToStationDirections,
-        stationToStationDirections: action.stationToStationDirections
-        stationToArrivalDirections: action.stationToArrivalDirections,
+        stationToStationDirections: action.stationToStationDirections,
+        stationToArrivalDirections: action.stationToArrivalDirections
       }
     }
     case SEARCH_DIRECTIONS_FAILED: {

@@ -53,7 +53,6 @@ class AutocompleteInput extends React.Component {
 
   render() {
     const { departure, arrival, bothDestinationsSelected } = this.state
-    const { handleBikeSearch } = this.props
 
     return (
       <div className="bike-my-way-form">

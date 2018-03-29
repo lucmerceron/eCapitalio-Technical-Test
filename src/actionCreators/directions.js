@@ -1,7 +1,4 @@
 import makeActionCreator from './makeActionCreator'
-import Api from '../service/Api'
-import constants from '../constants/constants'
-import searchForClosestStation from '../utils/searchForClosestStation'
 
 /* Scoped to this module */
 const DirectionsService = new window.google.maps.DirectionsService()
@@ -37,15 +34,21 @@ export function searchDirections(departureLatLng, arrivalLatLng, departureStatio
     )
     Promise.all([
       retrieveDirection(departureLatLng, getLatLngOfStation(departureStation), WALKING),
-      retrieveDirection(getLatLngOfStation(departureLatLng), getLatLngOfStation(arrivalStation), BICYCLING),
-      retrieveDirection(getLatLngOfStation(arrivalStation), arrivalLatLng, WALKING),
-    ]).then(directions => {
-      searchDirectionsSuccess(...directions)
-    }).catch(searchDirectionsFailed)
+      retrieveDirection(
+        getLatLngOfStation(departureLatLng),
+        getLatLngOfStation(arrivalStation),
+        BICYCLING
+      ),
+      retrieveDirection(getLatLngOfStation(arrivalStation), arrivalLatLng, WALKING)
+    ])
+      .then(directions => {
+        searchDirectionsSuccess(...directions)
+      })
+      .catch(searchDirectionsFailed)
   }
 }
 
-const getLatLngOfStation = station => { lat: station.lat, lng: station.lng }
+const getLatLngOfStation = station => ({ lat: station.lat, lng: station.lng })
 
 const retrieveDirection = (origin, destination, travelMode) =>
   new Promise((resolve, reject) => {
