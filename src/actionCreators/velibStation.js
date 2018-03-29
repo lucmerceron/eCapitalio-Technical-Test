@@ -30,7 +30,7 @@ export function searchClosestStations(departureLatLng, arrivalLatLng) {
     dispatch(searchClosestStationsRequest(departureLatLng, arrivalLatLng))
 
     // [Optimization] TODO if time: Do this GET once at the end of page loading and store the result in the store
-    Api.get(constants.velibApiUrl).then(stations => {
+    return Api.get(constants.velibApiUrl).then(stations => {
       const closestDepartureStation = searchForClosestStation(stations, departureLatLng, 'nbEbike')
       const closestArrivalStation = searchForClosestStation(stations, arrivalLatLng, 'nbFreeEDock')
 
@@ -42,6 +42,8 @@ export function searchClosestStations(departureLatLng, arrivalLatLng) {
             'Sorry, we were not able to find a way to you destination, please try another route.'
           )
         )
+
+      return { closestDepartureStation, closestArrivalStation }
     })
   }
 }

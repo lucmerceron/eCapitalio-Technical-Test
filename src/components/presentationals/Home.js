@@ -13,15 +13,21 @@ class Home extends React.Component {
     }
   }
   render() {
-    const { searchClosestStations, departureStation, arrivalStation } = this.props
+    const {
+      searchClosestStationsAndDirections,
+      departureStation,
+      arrivalStation,
+      directions
+    } = this.props
     const { departureLatLng, arrivalLatLng } = this.state
+
     return (
       <div className="bike-my-way">
         Bike My Way
         <AutocompleteInput
           handleBikeSearch={({ departureLatLng, arrivalLatLng }) => {
             this.setState({ departureLatLng, arrivalLatLng }, () => {
-              searchClosestStations(departureLatLng, arrivalLatLng)
+              searchClosestStationsAndDirections(departureLatLng, arrivalLatLng)
             })
           }}
         />
@@ -29,10 +35,11 @@ class Home extends React.Component {
           loadingElement={<div style={{ height: `100%` }} />}
           containerElement={<div className="bike-my-way-map-container" />}
           mapElement={<div style={{ height: `100%` }} />}
-          departureStation={departureStation}
-          arrivalStation={arrivalStation}
           departureLatLng={departureLatLng}
           arrivalLatLng={arrivalLatLng}
+          departureStation={departureStation}
+          arrivalStation={arrivalStation}
+          directions={directions}
         />
       </div>
     )
@@ -54,7 +61,12 @@ Home.propTypes = {
     nbFreeEDock: PropTypes.number,
     distance: PropTypes.number
   }),
-  searchClosestStations: PropTypes.func.isRequired
+  directions: PropTypes.shape({
+    departureToStationDirections: PropTypes.object,
+    stationToStationDirections: PropTypes.object,
+    stationToArrivalDirections: PropTypes.object
+  }).isRequired,
+  searchClosestStationsAndDirections: PropTypes.func.isRequired
 }
 
 export default Home

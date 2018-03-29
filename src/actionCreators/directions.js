@@ -42,9 +42,9 @@ export function searchDirections(departureLatLng, arrivalLatLng, departureStatio
       retrieveDirection(getLatLngOfStation(arrivalStation), arrivalLatLng, WALKING)
     ])
       .then(directions => {
-        searchDirectionsSuccess(...directions)
+        dispatch(searchDirectionsSuccess(...directions))
       })
-      .catch(searchDirectionsFailed)
+      .catch(err => dispatch(searchDirectionsFailed(err)))
   }
 }
 
