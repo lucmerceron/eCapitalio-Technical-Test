@@ -1,11 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withGoogleMap, GoogleMap, DirectionsRenderer } from 'react-google-maps'
+import { InfoBox } from 'react-google-maps/lib/components/addons/InfoBox'
 
 import './MapContainer.css'
 
 // Scoped to the module
 const DirectionsService = new window.google.maps.DirectionsService()
+
+const getCenterOfLocations = locations => {
+  var bound = new window.google.maps.LatLngBounds()
+  for (let i = 0; i < locations.length; i++) {
+    bound.extend(locations[i])
+  }
+  return bound.getCenter()
+}
 
 class MapContainer extends React.Component {
   constructor() {
@@ -25,6 +34,7 @@ class MapContainer extends React.Component {
   componentDidUpdate(lastProps) {
     if (lastProps !== this.props) this.calculDirections()
   }
+
   calculDirections() {
     const { departureLatLng, arrivalLatLng, velibStation } = this.props
 
@@ -99,7 +109,7 @@ class MapContainer extends React.Component {
 
     return (
       <GoogleMap defaultZoom={12} defaultCenter={{ lat: 48.858093, lng: 2.294694 }}>
-        {departureToBikeDirection && (
+        {departureToBikeDirection && [
           <DirectionsRenderer
             options={{
               polylineOptions: {
@@ -107,8 +117,17 @@ class MapContainer extends React.Component {
               }
             }}
             directions={departureToBikeDirection}
-          />
-        )}
+          />,
+          <InfoBox
+            defaultPosition={getCenterOfLocations(departureToBikeDirection.routes[0].overview_path)}
+            options={{ closeBoxURL: ``, enableEventPropagation: true }}
+          >
+            <div style={{ fontSize: `16px`, fontColor: `#08233B` }}>
+              {departureToBikeDirection.routes[0].legs[0].distance.text}
+              {departureToBikeDirection.routes[0].legs[0].duration.text}
+            </div>
+          </InfoBox>
+        ]}
         {bikeToDockDirection && (
           <DirectionsRenderer
             options={{
