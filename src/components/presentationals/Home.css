@@ -1,2 +1,7 @@
 .bike-my-way {
+  position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  flex: 0 1 1024px;
+  background-color: white;
 }

@@ -10,7 +10,7 @@ const Home = props => (
     <AutocompleteInput />
     <MapContainer
       loadingElement={<div style={{ height: `100%` }} />}
-      containerElement={<div style={{ height: `400px` }} />}
+      containerElement={<div className="bike-my-way-map-container" />}
       mapElement={<div style={{ height: `100%` }} />}
     />
   </div>
