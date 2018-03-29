@@ -4,23 +4,40 @@ import MapContainer from './MapContainer'
 import AutocompleteInput from './AutocompleteInput'
 import './Home.css'
 
-const Home = ({ searchClosestDepartureBike, searchClosestArrivalDock, velibStation }) => (
-  <div className="bike-my-way">
-    Bike My Way
-    <AutocompleteInput
-      handleBikeSearch={({ departureLatLng, arrivalLatLng }) => {
-        searchClosestDepartureBike(departureLatLng.lat, departureLatLng.lng)
-        searchClosestArrivalDock(arrivalLatLng.lat, arrivalLatLng.lng)
-      }}
-    />
-    <MapContainer
-      loadingElement={<div style={{ height: `100%` }} />}
-      containerElement={<div className="bike-my-way-map-container" />}
-      mapElement={<div style={{ height: `100%` }} />}
-      velibStation={velibStation}
-    />
-  </div>
-)
+class Home extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      departureLatLng: {},
+      arrivalLatLng: {}
+    }
+  }
+  render() {
+    const { searchClosestDepartureBike, searchClosestArrivalDock, velibStation } = this.props
+    const { departureLatLng, arrivalLatLng } = this.state
+    return (
+      <div className="bike-my-way">
+        Bike My Way
+        <AutocompleteInput
+          handleBikeSearch={({ departureLatLng, arrivalLatLng }) => {
+            this.setState({ departureLatLng, arrivalLatLng }, () => {
+              searchClosestDepartureBike(departureLatLng.lat, departureLatLng.lng)
+              searchClosestArrivalDock(arrivalLatLng.lat, arrivalLatLng.lng)
+            })
+          }}
+        />
+        <MapContainer
+          loadingElement={<div style={{ height: `100%` }} />}
+          containerElement={<div className="bike-my-way-map-container" />}
+          mapElement={<div style={{ height: `100%` }} />}
+          velibStation={velibStation}
+          departureLatLng={departureLatLng}
+          arrivalLatLng={arrivalLatLng}
+        />
+      </div>
+    )
+  }
+}
 
 Home.propTypes = {
   velibStation: PropTypes.shape({
