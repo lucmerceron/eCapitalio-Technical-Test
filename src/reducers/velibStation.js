@@ -11,7 +11,6 @@ export default function velibStation(state = initState, action) {
   switch (action.type) {
     case SEARCH_CLOSEST_STATIONS_SUCCESS: {
       return {
-        ...state,
         departureStation: action.departureStation,
         arrivalStation: action.arrivalStation
       }
@@ -19,7 +18,8 @@ export default function velibStation(state = initState, action) {
     case SEARCH_CLOSEST_STATIONS_FAILED: {
       return initState
     }
+    default: {
+      return state
+    }
   }
-
-  return state
 }
