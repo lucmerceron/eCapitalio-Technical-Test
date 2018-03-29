@@ -1,5 +1,6 @@
 import React from 'react'
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
+import PropTypes from 'prop-types'
+import PlacesAutocomplete, { geocodeByPlaceId, getLatLng } from 'react-places-autocomplete'
 
 import './AutocompleteInput.css'
 
@@ -13,6 +14,7 @@ class AutocompleteInput extends React.Component {
       arrivalId: '',
       bothDestinationsSelected: 0 // 0: none selected, 1: one selected, 2 or more: both selected
     }
+    // TODO: add the verification for Paris & its surrounding
     this.onDepartureChange = departure => this.setState({ departure })
     this.onArrivalChange = arrival => this.setState({ arrival })
     this.onDepartureSelected = (address, placeId) => {
@@ -29,22 +31,30 @@ class AutocompleteInput extends React.Component {
         arrivalId: placeId
       }))
     }
+    this.handleFormSubmit = this.handleFormSubmit.bind(this)
   }
 
-  handleFormSubmit = event => {
-    event.preventDefault()
+  handleFormSubmit() {
+    const { departureId, arrivalId } = this.state
+    const { handleBikeSearch } = this.props
 
-    geocodeByAddress(this.state.address)
-      .then(results => getLatLng(results[0]))
-      .then(latLng => console.log('Success', latLng))
+    // Search the lat & lng of both location
+    Promise.all([geocodeByPlaceId(departureId), geocodeByPlaceId(arrivalId)])
+      .then(results => Promise.all([getLatLng(results[0][0]), getLatLng(results[1][0])]))
+      .then(results => ({
+        departureLatLng: results[0],
+        arrivalLatLng: results[1]
+      }))
+      .then(handleBikeSearch)
       .catch(error => console.error('Error', error))
   }
 
   render() {
-    const { departure, arrival, bothDestinationsSelected } = this.state
-    console.log(this.state)
+    const { departure, arrival, bothDestinationsSelected, departureId, arrivalId } = this.state
+    const { handleBikeSearch } = this.props
+
     return (
-      <form onSubmit={this.handleFormSubmit} className="bike-my-way-form">
+      <div className="bike-my-way-form">
         <PlacesAutocomplete
           inputProps={{
             value: departure,
@@ -71,12 +81,20 @@ class AutocompleteInput extends React.Component {
           }}
           debounce={200}
         />
-        <button type="submit" disabled={bothDestinationsSelected < 2}>
+        <button
+          type="submit"
+          disabled={bothDestinationsSelected < 2}
+          onClick={this.handleFormSubmit}
+        >
           Find my Bike !
         </button>
-      </form>
+      </div>
     )
   }
+}
+
+AutocompleteInput.propTypes = {
+  handleBikeSearch: PropTypes.func.isRequired
 }
 
 export default AutocompleteInput
