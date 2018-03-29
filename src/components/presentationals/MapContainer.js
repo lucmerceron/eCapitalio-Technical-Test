@@ -3,27 +3,21 @@ import PropTypes from 'prop-types'
 import { withGoogleMap, GoogleMap, DirectionsRenderer } from 'react-google-maps'
 import { InfoBox } from 'react-google-maps/lib/components/addons/InfoBox'
 
+import InformativeDirection from './InformativeDirection'
+
 import './MapContainer.css'
 
 // Scoped to the module
 const DirectionsService = new window.google.maps.DirectionsService()
-
-const getCenterOfLocations = locations => {
-  var bound = new window.google.maps.LatLngBounds()
-  for (let i = 0; i < locations.length; i++) {
-    bound.extend(locations[i])
-  }
-  return bound.getCenter()
-}
 
 class MapContainer extends React.Component {
   constructor() {
     super()
 
     this.state = {
-      departureToBikeDirection: null,
-      bikeToDockDirection: null,
-      dockToArrivalDirection: null
+      departureToBikeDirections: null,
+      bikeToDockDirections: null,
+      dockToArrivalDirections: null
     }
 
     this.calculDirections = this.calculDirections.bind(this)
@@ -56,7 +50,7 @@ class MapContainer extends React.Component {
         (res, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
             this.setState({
-              departureToBikeDirection: res
+              departureToBikeDirections: res
             })
           } else {
             console.error(`error fetching directions ${res}`)
@@ -78,7 +72,7 @@ class MapContainer extends React.Component {
         (res, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
             this.setState({
-              bikeToDockDirection: res
+              bikeToDockDirections: res
             })
           } else {
             console.error(`error fetching directions ${res}`)
@@ -94,7 +88,7 @@ class MapContainer extends React.Component {
         (res, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
             this.setState({
-              dockToArrivalDirection: res
+              dockToArrivalDirections: res
             })
           } else {
             console.error(`error fetching directions ${res}`)
@@ -104,50 +98,14 @@ class MapContainer extends React.Component {
     }
   }
   render() {
-    const { departureToBikeDirection, bikeToDockDirection, dockToArrivalDirection } = this.state
+    const { departureToBikeDirections, bikeToDockDirections, dockToArrivalDirections } = this.state
     const { velibStation } = this.props
 
     return (
       <GoogleMap defaultZoom={12} defaultCenter={{ lat: 48.858093, lng: 2.294694 }}>
-        {departureToBikeDirection && [
-          <DirectionsRenderer
-            options={{
-              polylineOptions: {
-                strokeColor: 'blue'
-              }
-            }}
-            directions={departureToBikeDirection}
-          />,
-          <InfoBox
-            defaultPosition={getCenterOfLocations(departureToBikeDirection.routes[0].overview_path)}
-            options={{ closeBoxURL: ``, enableEventPropagation: true }}
-          >
-            <div style={{ fontSize: `16px`, fontColor: `#08233B` }}>
-              {departureToBikeDirection.routes[0].legs[0].distance.text}
-              {departureToBikeDirection.routes[0].legs[0].duration.text}
-            </div>
-          </InfoBox>
-        ]}
-        {bikeToDockDirection && (
-          <DirectionsRenderer
-            options={{
-              polylineOptions: {
-                strokeColor: 'red'
-              }
-            }}
-            directions={bikeToDockDirection}
-          />
-        )}
-        {dockToArrivalDirection && (
-          <DirectionsRenderer
-            options={{
-              polylineOptions: {
-                strokeColor: 'blue'
-              }
-            }}
-            directions={dockToArrivalDirection}
-          />
-        )}
+        <InformativeDirection directions={departureToBikeDirections} color="blue" />
+        <InformativeDirection directions={bikeToDockDirections} color="red" />
+        <InformativeDirection directions={dockToArrivalDirections} color="blue" />
       </GoogleMap>
     )
   }
