@@ -38,20 +38,22 @@ const InformativeDirection = ({ directions, color }) => {
       directions={directions}
     />
   ]
-
-  if (locations)
+  if (locations) {
+    const distance = R.view(distanceLens, directions)
+    const duration = R.view(durationLens, directions)
     componentsToRender.push(
       <InfoBox
-        key={1}
+        key={`${distance} - ${duration}`}
         defaultPosition={getCenterOfLocations(locations)}
         options={{ closeBoxURL: ``, enableEventPropagation: true }}
       >
         <div className="informative-direction-info">
-          <div className="informative-direction-distance">{R.view(distanceLens, directions)}</div>
-          <div className="informative-direction-duration">{R.view(durationLens, directions)}</div>
+          <div className="informative-direction-distance">{distance}</div>
+          <div className="informative-direction-duration">{duration}</div>
         </div>
       </InfoBox>
     )
+  }
 
   return componentsToRender
 }
