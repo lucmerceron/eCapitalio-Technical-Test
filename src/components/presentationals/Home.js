@@ -13,7 +13,7 @@ class Home extends React.Component {
     }
   }
   render() {
-    const { searchClosestDepartureBike, searchClosestArrivalDock, velibStation } = this.props
+    const { searchClosestStations, departureStation, arrivalStation } = this.props
     const { departureLatLng, arrivalLatLng } = this.state
     return (
       <div className="bike-my-way">
@@ -21,8 +21,7 @@ class Home extends React.Component {
         <AutocompleteInput
           handleBikeSearch={({ departureLatLng, arrivalLatLng }) => {
             this.setState({ departureLatLng, arrivalLatLng }, () => {
-              searchClosestDepartureBike(departureLatLng.lat, departureLatLng.lng)
-              searchClosestArrivalDock(arrivalLatLng.lat, arrivalLatLng.lng)
+              searchClosestStations(departureLatLng, arrivalLatLng)
             })
           }}
         />
@@ -30,7 +29,8 @@ class Home extends React.Component {
           loadingElement={<div style={{ height: `100%` }} />}
           containerElement={<div className="bike-my-way-map-container" />}
           mapElement={<div style={{ height: `100%` }} />}
-          velibStation={velibStation}
+          departureStation={departureStation}
+          arrivalStation={arrivalStation}
           departureLatLng={departureLatLng}
           arrivalLatLng={arrivalLatLng}
         />
@@ -40,24 +40,21 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
-  velibStation: PropTypes.shape({
-    departureStation: PropTypes.shape({
-      name: PropTypes.string,
-      lat: PropTypes.number,
-      lng: PropTypes.number,
-      nbEbike: PropTypes.number,
-      distance: PropTypes.number
-    }),
-    arrivalStation: PropTypes.shape({
-      name: PropTypes.string,
-      lat: PropTypes.number,
-      lng: PropTypes.number,
-      nbFreeEDock: PropTypes.number,
-      distance: PropTypes.number
-    })
-  }).isRequired,
-  searchClosestDepartureBike: PropTypes.func.isRequired,
-  searchClosestArrivalDock: PropTypes.func.isRequired
+  departureStation: PropTypes.shape({
+    name: PropTypes.string,
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+    nbEbike: PropTypes.number,
+    distance: PropTypes.number
+  }),
+  arrivalStation: PropTypes.shape({
+    name: PropTypes.string,
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+    nbFreeEDock: PropTypes.number,
+    distance: PropTypes.number
+  }),
+  searchClosestStations: PropTypes.func.isRequired
 }
 
 export default Home

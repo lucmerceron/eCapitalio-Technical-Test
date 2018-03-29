@@ -6,7 +6,7 @@ import * as R from 'ramda'
 
 import './InformativeDirection.css'
 
-/* Useful to center the InfoBox */
+/* Useful trick to "center" the InfoBox on the path */
 const getCenterOfLocations = locations => {
   if (!locations) return null
 

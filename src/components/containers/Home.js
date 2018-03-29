@@ -1,15 +1,13 @@
 import { connect } from 'react-redux'
 
-import {
-  searchClosestDepartureBike,
-  searchClosestArrivalDock
-} from '../../actionCreators/velibStation'
+import { searchClosestStations } from '../../actionCreators/velibStation'
 import Home from '../presentationals/Home'
 
 const mapStateToProps = state => ({
-  velibStation: state.velibStation
+  departureStation: state.velibStation.departureStation,
+  arrivalStation: state.velibStation.arrivalStation
 })
 
-const mapDispatchToProps = { searchClosestDepartureBike, searchClosestArrivalDock }
+const mapDispatchToProps = { searchClosestStations }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

@@ -25,25 +25,20 @@ class MapContainer extends React.Component {
   componentDidMount() {
     this.calculDirections()
   }
-  componentDidUpdate(lastProps) {
-    if (lastProps !== this.props) this.calculDirections()
+  componentDidUpdate() {
+    this.calculDirections()
   }
 
   calculDirections() {
-    const { departureLatLng, arrivalLatLng, velibStation } = this.props
+    const { departureLatLng, arrivalLatLng, departureStation, arrivalStation } = this.props
 
-    if (
-      departureLatLng &&
-      arrivalLatLng &&
-      velibStation.departureStation &&
-      velibStation.arrivalStation
-    ) {
+    if (departureLatLng && arrivalLatLng && departureStation && arrivalStation) {
       DirectionsService.route(
         {
           origin: departureLatLng,
           destination: {
-            lat: velibStation.departureStation.lat,
-            lng: velibStation.departureStation.lng
+            lat: departureStation.lat,
+            lng: departureStation.lng
           },
           travelMode: window.google.maps.TravelMode.WALKING
         },
@@ -60,12 +55,12 @@ class MapContainer extends React.Component {
       DirectionsService.route(
         {
           origin: {
-            lat: velibStation.departureStation.lat,
-            lng: velibStation.departureStation.lng
+            lat: departureStation.lat,
+            lng: departureStation.lng
           },
           destination: {
-            lat: velibStation.arrivalStation.lat,
-            lng: velibStation.arrivalStation.lng
+            lat: arrivalStation.lat,
+            lng: arrivalStation.lng
           },
           travelMode: window.google.maps.TravelMode.BICYCLING
         },
@@ -81,7 +76,7 @@ class MapContainer extends React.Component {
       )
       DirectionsService.route(
         {
-          origin: { lat: velibStation.arrivalStation.lat, lng: velibStation.arrivalStation.lng },
+          origin: { lat: arrivalStation.lat, lng: arrivalStation.lng },
           destination: arrivalLatLng,
           travelMode: window.google.maps.TravelMode.WALKING
         },
@@ -99,10 +94,9 @@ class MapContainer extends React.Component {
   }
   render() {
     const { departureToBikeDirections, bikeToDockDirections, dockToArrivalDirections } = this.state
-    const { velibStation } = this.props
 
     return (
-      <GoogleMap defaultZoom={12} defaultCenter={{ lat: 48.858093, lng: 2.294694 }}>
+      <GoogleMap defaultZoom={12} defaultCenter={{ lat: 48.8534, lng: 2.3488 }}>
         <InformativeDirection directions={departureToBikeDirections} color="blue" />
         <InformativeDirection directions={bikeToDockDirections} color="red" />
         <InformativeDirection directions={dockToArrivalDirections} color="blue" />
@@ -122,22 +116,20 @@ MapContainer.propTypes = {
     lat: PropTypes.number,
     lng: PropTypes.number
   }),
-  velibStation: PropTypes.shape({
-    departureStation: PropTypes.shape({
-      name: PropTypes.string,
-      lat: PropTypes.number,
-      lng: PropTypes.number,
-      nbEbike: PropTypes.number,
-      distance: PropTypes.number
-    }),
-    arrivalStation: PropTypes.shape({
-      name: PropTypes.string,
-      lat: PropTypes.number,
-      lng: PropTypes.number,
-      nbFreeEDock: PropTypes.number,
-      distance: PropTypes.number
-    })
-  }).isRequired
+  departureStation: PropTypes.shape({
+    name: PropTypes.string,
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+    nbEbike: PropTypes.number,
+    distance: PropTypes.number
+  }),
+  arrivalStation: PropTypes.shape({
+    name: PropTypes.string,
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+    nbFreeEDock: PropTypes.number,
+    distance: PropTypes.number
+  })
 }
 
 export default withGoogleMap(MapContainer)

@@ -1,122 +1,47 @@
 import makeActionCreator from './makeActionCreator'
 import Api from '../service/Api'
 import constants from '../constants/constants'
-import distanceToLocation from '../utils/distanceToLocation'
+import searchForClosestStation from '../utils/searchForClosestStation'
 
 /* Action types */
-export const SEARCH_CLOSEST_DEPARTURE_BIKE_REQUEST = 'SEARCH_CLOSEST_DEPARTURE_BIKE_REQUEST'
-export const SEARCH_CLOSEST_DEPARTURE_BIKE_SUCCESS = 'SEARCH_CLOSEST_DEPARTURE_BIKE_SUCCESS'
-export const SEARCH_CLOSEST_DEPARTURE_BIKE_FAILED = 'SEARCH_CLOSEST_DEPARTURE_BIKE_FAILED'
-export const SEARCH_CLOSEST_ARRIVAL_DOCK_REQUEST = 'SEARCH_CLOSEST_ARRIVAL_DOCK_REQUEST'
-export const SEARCH_CLOSEST_ARRIVAL_DOCK_SUCCESS = 'SEARCH_CLOSEST_ARRIVAL_DOCK_SUCCESS'
-export const SEARCH_CLOSEST_ARRIVAL_DOCK_FAILED = 'SEARCH_CLOSEST_ARRIVAL_DOCK_FAILED'
+export const SEARCH_CLOSEST_STATIONS_REQUEST = 'SEARCH_CLOSEST_STATIONS_REQUEST'
+export const SEARCH_CLOSEST_STATIONS_SUCCESS = 'SEARCH_CLOSEST_STATIONS_SUCCESS'
+export const SEARCH_CLOSEST_STATIONS_FAILED = 'SEARCH_CLOSEST_STATIONS_FAILED'
 
 /* Action creators */
-export const searchClosestDepartureBikeRequest = makeActionCreator(
-  SEARCH_CLOSEST_DEPARTURE_BIKE_REQUEST,
-  'lat',
-  'lng'
+export const searchClosestStationsRequest = makeActionCreator(
+  SEARCH_CLOSEST_STATIONS_REQUEST,
+  'departureLatLng',
+  'arrivalLatLng'
 )
-export const searchClosestDepartureBikeSuccess = makeActionCreator(
-  SEARCH_CLOSEST_DEPARTURE_BIKE_SUCCESS,
-  'departureStation'
-)
-export const searchClosestDepartureBikeFailed = makeActionCreator(
-  SEARCH_CLOSEST_DEPARTURE_BIKE_FAILED,
-  'error'
-)
-export const searchClosestArrivalDockRequest = makeActionCreator(
-  SEARCH_CLOSEST_ARRIVAL_DOCK_REQUEST,
-  'lat',
-  'lng'
-)
-export const searchClosestArrivalDockSuccess = makeActionCreator(
-  SEARCH_CLOSEST_ARRIVAL_DOCK_SUCCESS,
+export const searchClosestStationsSuccess = makeActionCreator(
+  SEARCH_CLOSEST_STATIONS_SUCCESS,
+  'departureStation',
   'arrivalStation'
 )
-export const searchClosestArrivalDockFailed = makeActionCreator(
-  SEARCH_CLOSEST_ARRIVAL_DOCK_FAILED,
+export const searchClosestStationsFailed = makeActionCreator(
+  SEARCH_CLOSEST_STATIONS_FAILED,
   'error'
 )
 
 /* Thunk action creators */
-// TODO: Dry these functions
-export function searchClosestDepartureBike(lat, lng) {
+export function searchClosestStations(departureLatLng, arrivalLatLng) {
   return dispatch => {
-    dispatch(searchClosestDepartureBikeRequest(lat, lng))
+    dispatch(searchClosestStationsRequest(departureLatLng, arrivalLatLng))
 
-    // [Important Optimization] TODO if time: Do this get once at the end of page loading
-    return Api.get(constants.velibApiUrl).then(results => {
-      const trimedResults = results
-        .filter(
-          result =>
-            result.nbEbike !== 0 &&
-            result.station &&
-            result.station.gps &&
-            result.station.gps.latitude &&
-            result.station.gps.longitude
-        ) // Filter the status with no bike available
-        .map(result => ({
-          name: result.station.name,
-          lat: result.station.gps.latitude,
-          lng: result.station.gps.longitude,
-          nbEbike: result.nbEbike,
-          distance: distanceToLocation(
-            lat,
-            lng,
-            result.station.gps.latitude,
-            result.station.gps.longitude
+    // [Optimization] TODO if time: Do this GET once at the end of page loading and store the result in the store
+    Api.get(constants.velibApiUrl).then(stations => {
+      const closestDepartureStation = searchForClosestStation(stations, departureLatLng, 'nbEbike')
+      const closestArrivalStation = searchForClosestStation(stations, arrivalLatLng, 'nbFreeEDock')
+
+      if (closestArrivalStation && closestDepartureStation)
+        dispatch(searchClosestStationsSuccess(closestArrivalStation, closestDepartureStation))
+      else
+        dispatch(
+          searchClosestStationsFailed(
+            'Sorry, we were not able to find a way to you destination, please try another route.'
           )
-        }))
-      const closestStation = trimedResults.reduce(
-        (closestStation, currentStation) =>
-          currentStation.distance < closestStation.distance ? currentStation : closestStation,
-        trimedResults[0]
-      )
-
-      if (closestStation) dispatch(searchClosestDepartureBikeSuccess(closestStation))
-      else dispatch(searchClosestDepartureBikeFailed('Free bike not found around you'))
-      return closestStation
-    })
-  }
-}
-
-export function searchClosestArrivalDock(lat, lng) {
-  return dispatch => {
-    dispatch(searchClosestArrivalDockRequest(lat, lng))
-
-    return Api.get(constants.velibApiUrl).then(results => {
-      const trimedResults = results
-        .filter(
-          result =>
-            result.nbFreeEDock !== 0 &&
-            result.station &&
-            result.station.gps &&
-            result.station.gps.latitude &&
-            result.station.gps.longitude
-        ) // Filter the status with no bike available
-        .map(result => ({
-          name: result.station.name,
-          lat: result.station.gps.latitude,
-          lng: result.station.gps.longitude,
-          nbFreeEDock: result.nbFreeEDock,
-          distance: distanceToLocation(
-            lat,
-            lng,
-            result.station.gps.latitude,
-            result.station.gps.longitude
-          )
-        }))
-
-      const closestStation = trimedResults.reduce(
-        (closestStation, currentStation) =>
-          currentStation.distance < closestStation.distance ? currentStation : closestStation,
-        trimedResults[0]
-      )
-
-      if (closestStation) dispatch(searchClosestArrivalDockSuccess(closestStation))
-      else dispatch(searchClosestArrivalDockFailed('Free dock not found near your arrival'))
-      return closestStation
+        )
     })
   }
 }
