@@ -8,19 +8,54 @@ import './MapContainer.css'
 
 const ROADMAP = window.google.maps.MapTypeId.ROADMAP
 
-const MapContainer = ({
-  departureLatLng,
-  arrivalLatLng,
-  departureStation,
-  arrivalStation,
-  directions
-}) => (
-  <GoogleMap defaultZoom={12} defaultCenter={{ lat: 48.8534, lng: 2.3488 }} mapTypeId={ROADMAP}>
-    <InformativeDirection directions={directions.departureToStationDirections} color="blue" />
-    <InformativeDirection directions={directions.stationToStationDirections} color="red" />
-    <InformativeDirection directions={directions.stationToArrivalDirections} color="blue" />
-  </GoogleMap>
-)
+class MapContainer extends React.Component {
+  constructor() {
+    super()
+
+    this.determineZoomAndCenter = this.determineZoomAndCenter.bind(this)
+    this.map = null
+  }
+  componentDidUpdate() {
+    this.determineZoomAndCenter()
+  }
+  /* Determine where to center & zoom */
+  determineZoomAndCenter() {
+    const { departureLatLng, arrivalLatLng, departureStation, arrivalStation } = this.props
+
+    const points = [
+      departureLatLng,
+      arrivalLatLng,
+      { lat: departureStation.lat, lng: departureStation.lng },
+      { lat: arrivalStation.lat, lng: arrivalStation.lng }
+    ]
+
+    if (points.some(point => !point.lat || !point.lng)) return
+
+    const bounds = new window.google.maps.LatLngBounds()
+
+    points.forEach(point => bounds.extend(point))
+
+    this.map.fitBounds(bounds)
+    this.map.panToBounds(bounds)
+  }
+
+  render() {
+    const { directions } = this.props
+
+    return (
+      <GoogleMap
+        ref={map => (this.map = map)}
+        defaultZoom={12}
+        defaultCenter={{ lat: 48.8534, lng: 2.3488 }}
+        mapTypeId={ROADMAP}
+      >
+        <InformativeDirection directions={directions.departureToStationDirections} color="blue" />
+        <InformativeDirection directions={directions.stationToStationDirections} color="red" />
+        <InformativeDirection directions={directions.stationToArrivalDirections} color="blue" />
+      </GoogleMap>
+    )
+  }
+}
 
 MapContainer.propTypes = {
   departureLatLng: PropTypes.shape({

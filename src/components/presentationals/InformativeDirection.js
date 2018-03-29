@@ -33,7 +33,8 @@ const InformativeDirection = ({ directions, color }) => {
       options={{
         polylineOptions: {
           strokeColor: color
-        }
+        },
+        preserveViewport: true
       }}
       directions={directions}
     />
