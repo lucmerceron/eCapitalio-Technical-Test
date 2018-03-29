@@ -1,7 +1,24 @@
+h1 {
+  color: #2687da;
+  font-family: 'Roboto', sans-serif;
+}
 .bike-my-way {
   position: relative;
   display: flex;
   flex-flow: row wrap;
   flex: 0 1 1024px;
-  background-color: white;
+}
+.bike-my-way-top-bar {
+  position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-around;
+  flex: 0 1 1024px;
+  height: 80px;
+  background-color: whitesmoke;
+}
+
+.paper {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }

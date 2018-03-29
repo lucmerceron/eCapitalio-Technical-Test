@@ -1,9 +1,17 @@
 .bike-my-way-form {
-  height: 200px;
   display: flex;
   flex-flow: row wrap;
-  align-items: center;
+}
+.bike-my-way-form > div {
+  margin: 0 8px;
 }
 
 .bike-my-way-input-container {
+  position: absolute;
+  z-index: 9;
+}
+
+button {
+  height: 36.5px;
+  margin-top: 4px !important;
 }

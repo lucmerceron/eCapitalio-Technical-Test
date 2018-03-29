@@ -23,17 +23,19 @@ class Home extends React.Component {
 
     return (
       <div className="bike-my-way">
-        Bike My Way
-        <AutocompleteInput
-          handleBikeSearch={({ departureLatLng, arrivalLatLng }) => {
-            this.setState({ departureLatLng, arrivalLatLng }, () => {
-              searchClosestStationsAndDirections(departureLatLng, arrivalLatLng)
-            })
-          }}
-        />
+        <div className="bike-my-way-top-bar paper">
+          <h1>Bike My Way</h1>
+          <AutocompleteInput
+            handleBikeSearch={({ departureLatLng, arrivalLatLng }) => {
+              this.setState({ departureLatLng, arrivalLatLng }, () => {
+                searchClosestStationsAndDirections(departureLatLng, arrivalLatLng)
+              })
+            }}
+          />
+        </div>
         <MapContainer
           loadingElement={<div style={{ height: `100%` }} />}
-          containerElement={<div className="bike-my-way-map-container" />}
+          containerElement={<div className="bike-my-way-map-container paper" />}
           mapElement={<div style={{ height: `100%` }} />}
           departureLatLng={departureLatLng}
           arrivalLatLng={arrivalLatLng}

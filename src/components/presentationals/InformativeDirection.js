@@ -48,9 +48,16 @@ const InformativeDirection = ({ directions, color }) => {
         defaultPosition={getCenterOfLocations(locations)}
         options={{ closeBoxURL: ``, enableEventPropagation: true }}
       >
-        <div className="informative-direction-info">
-          <div className="informative-direction-distance">{distance}</div>
-          <div className="informative-direction-duration">{duration}</div>
+        <div className="informative-direction-container">
+          {color === 'red' ? (
+            <i className="material-icons">&#xE52F;</i>
+          ) : (
+            <i className="material-icons">&#xE536;</i>
+          )}
+          <div className="informative-direction-info">
+            <div className="informative-direction-distance">{distance}</div>
+            <div className="informative-direction-duration">{duration}</div>
+          </div>
         </div>
       </InfoBox>
     )

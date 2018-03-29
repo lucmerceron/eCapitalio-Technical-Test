@@ -83,6 +83,7 @@ class AutocompleteInput extends React.Component {
           debounce={200}
         />
         <button
+          className="btn btn-sm animated-button victoria-one"
           type="submit"
           disabled={bothDestinationsSelected < 2}
           onClick={this.handleFormSubmit}

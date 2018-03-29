@@ -1,0 +1,33 @@
+.infoBox {
+  width: auto !important;
+}
+
+.informative-direction-container {
+  position: relative;
+  display: flex;
+  background-color: white;
+  flex-flow: row nowrap;
+  padding: 6px;
+  align-items: center;
+  background-color: #56a1f6;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 12px;
+  line-height: 14px;
+  border-radius: 8px;
+  border: 1px solid aliceblue;
+}
+.informative-direction-container .material-icons {
+  font-size: 16px;
+  display: flex;
+  flex: 1 1 0%;
+  margin-right: 4px;
+}
+.informative-direction-info {
+  flex-flow: column wrap;
+  display: flex;
+  flex: 1 1 0%;
+}
+.informative-direction-info > div {
+  white-space: nowrap;
+}
