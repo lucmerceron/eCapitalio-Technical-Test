@@ -35,7 +35,7 @@ export function searchDirections(departureLatLng, arrivalLatLng, departureStatio
     Promise.all([
       retrieveDirection(departureLatLng, getLatLngOfStation(departureStation), WALKING),
       retrieveDirection(
-        getLatLngOfStation(departureLatLng),
+        getLatLngOfStation(departureStation),
         getLatLngOfStation(arrivalStation),
         BICYCLING
       ),
